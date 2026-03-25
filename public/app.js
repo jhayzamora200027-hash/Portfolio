@@ -29,15 +29,37 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Simple scroll reveal for cards
-  const reveal = (el) => {
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 80) el.classList.add('reveal');
-  };
-  const cards = document.querySelectorAll('.card, .skill, .portrait');
-  const onScroll = () => cards.forEach(reveal);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  // Use IntersectionObserver for reliable reveal animations
+  const revealTargets = document.querySelectorAll('.card, .skill, .portrait, .content-card');
+  if (window.IntersectionObserver) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealTargets.forEach(t => obs.observe(t));
+  } else {
+    // fallback
+    revealTargets.forEach(t => t.classList.add('reveal'));
+  }
+
+  // Card tilt interaction (subtle)
+  document.querySelectorAll('.projects-grid .card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      const dx = (e.clientX - cx) / rect.width;
+      const dy = (e.clientY - cy) / rect.height;
+      const rY = dx * 6; // rotateY
+      const rX = -dy * 6; // rotateX
+      card.style.transform = `perspective(800px) translateZ(0) rotateX(${rX}deg) rotateY(${rY}deg) translateY(-6px)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
 
   // Contact form: basic mailto fallback
   const form = document.getElementById('contact-form');
