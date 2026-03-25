@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nav.style.display = visible ? '' : 'flex';
     });
   }
+  
 
   // Theme toggle (light/dark simulated)
   const themeToggle = document.getElementById('theme-toggle');
@@ -25,8 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       root.removeAttribute('data-theme');
       themeToggle.textContent = '🌙';
-        // advance each group's position along path using per-group velocity
-        const dtSec = Math.max(0.001, dt/1000);
+    }
+  });
 
   // Simple scroll reveal for cards
   // Use IntersectionObserver for reliable reveal animations
@@ -34,136 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.IntersectionObserver) {
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        // advance each group's position along path using per-group velocity
-        const dtSec = Math.max(0.001, dt/1000);
-        isoGroups.forEach((g) => {
+        if (entry.isIntersecting) {
           entry.target.classList.add('reveal');
-          const t = ts/1000;
-          // If motionPath exists, move along the path using per-group `_s` and `_v` for collision handling
-          if (motionPath && motionSvg && g._pathLen) {
-            // advance s by velocity
-            g._s = (g._s + g._v * dtSec) % g._pathLen;
-            if (g._s < 0) g._s += g._pathLen;
-            const len = g._s;
-            const pt = motionPath.getPointAtLength(len);
-            const pt2 = motionPath.getPointAtLength((len + 2) % g._pathLen);
-            const angleRad = Math.atan2(pt2.y - pt.y, pt2.x - pt.x);
-            const angleDeg = angleRad * 180 / Math.PI;
-
-            // rolling angle to simulate a die rolling: proportional to distance along path
-            const rollAngle = (g._s / 20) * 360 * (g._spinSpeed || 1);
-
-            // perpendicular wobble offset (side-to-side)
-            const dxT = pt2.x - pt.x;
-            const dyT = pt2.y - pt.y;
-            const mag = Math.sqrt(dxT*dxT + dyT*dyT) || 1;
-            const nx = -dyT / mag; // normalized perpendicular
-            const ny = dxT / mag;
-            const wob = Math.sin(t * (0.9 + (g._spinSpeed||1)) + (g._phaseOffset||0)/100) * g._wobbleAmp;
-            const wobX = nx * wob;
-            const wobY = ny * wob;
-
-            // bobbing (vertical) based on shape's bob amplitude
-            const bobOffset = Math.sin(t * (0.9 + (g._spinSpeed||1)) + (g._phaseOffset||0)/50) * g._bobAmp;
-
-            // build transform: translate to path point + wobble offsets, rotate by path tangent, and scale
-            const tx = pt.x + wobX;
-            const ty = pt.y + wobY - bobOffset * 0.5; // lift slightly when bobbing
-            try {
-              g.setAttribute('transform', `translate(${tx}, ${ty}) rotate(${angleDeg}) scale(${scale})`);
-              // inner rotation + small tilt to simulate tumbling
-              const inner = g.querySelector('.cube') || g.querySelector('circle') || g.querySelector('polygon');
-              if (inner) {
-                const tilt = Math.sin(t * 2.3 + g._phaseOffset/100) * 6; // small tilt oscillation
-                // circle rolling: compute roll from traveled distance if shape is circle
-                if (g.dataset.shape === 'circle' && inner.tagName.toLowerCase() === 'circle'){
-                  const r = parseFloat(inner.getAttribute('r') || 26);
-                  const rollDeg = (g._s * 180) / (Math.PI * Math.max(1, r));
-                  inner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollDeg}) rotate(${tilt})`);
-                } else {
-                  inner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollAngle}) rotate(${tilt})`);
-                }
-              }
-              // update shadow under the element
-              const shadow = g.querySelector('.shadow');
-              if (shadow) {
-                // scale shadow by scale and bob (higher => smaller shadow)
-                const srx = Math.max(8, 36 * (1 / Math.max(0.6, scale)));
-                const sry = Math.max(4, 12 * (1 / Math.max(0.6, scale)));
-                shadow.setAttribute('cx', 0);
-                shadow.setAttribute('cy', 10 + Math.max(0, bobOffset/3));
-                shadow.setAttribute('rx', srx);
-                shadow.setAttribute('ry', sry);
-                shadow.setAttribute('opacity', Math.max(0.06, 0.18 * (1 / Math.max(0.6, scale))));
-              }
-            } catch (e) {
-              g.style.transform = `translate(${tx}px, ${ty}px) rotate(${angleDeg}deg) scale(${scale})`;
-              const inner = g.querySelector('.cube') || g.querySelector('circle') || g.querySelector('polygon');
-              if (inner) inner.style.transform = `translateY(${-bobOffset}px) rotate(${rollAngle}deg)`;
-            }
-          } else {
-        }, intervalMs);
-        g.dataset.pulseInterval = id;
+          obs.unobserve(entry.target);
+        }
       });
-    }
-
-        // simple collision detection along positions - bounce when shapes get too close
-        if (motionPath && motionSvg && isoGroups.length > 1) {
-          const positions = isoGroups.map(g => {
-            const pt = motionPath.getPointAtLength((g._s || 0) % g._pathLen);
-            return { g, x: pt.x, y: pt.y };
-          });
-          for (let i=0;i<positions.length;i++){
-            for (let j=i+1;j<positions.length;j++){
-              const a = positions[i], b = positions[j];
-              const dx = a.x - b.x; const dy = a.y - b.y;
-              const dist = Math.sqrt(dx*dx + dy*dy);
-              const thresh = 68; // collision threshold
-              if (dist < thresh) {
-                // simple elastic response: swap velocities with slight random factor
-                const va = a.g._v || 0;
-                const vb = b.g._v || 0;
-                a.g._v = -vb * (0.9 + Math.random()*0.2);
-                b.g._v = -va * (0.9 + Math.random()*0.2);
-                // nudge apart along path direction
-                a.g._s = (a.g._s + (a.g._v>0? -6:6)) % a.g._pathLen;
-                b.g._s = (b.g._s + (b.g._v>0? 6:-6)) % b.g._pathLen;
-                // trigger pop/bounce visuals
-                a.g._popping = ts;
-                b.g._popping = ts;
-              }
-            }
-          }
-        }
-    // Use IntersectionObserver to trigger when visible, but also trigger immediately as a fallback
-    if ('IntersectionObserver' in window) {
-      const isoObs = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            console.log('iso groups entering view — triggering animations');
-            addCubeClassesOnce();
-            startPulseCycles();
-            obs.disconnect();
-          }
-        });
-      }, { threshold: 0.12 });
-      isoGroups.forEach(g => isoObs.observe(g));
-    } else {
-      // immediate fallback
-      addCubeClassesOnce();
-      startPulseCycles();
-    }
-
-    // extra-protection: if elements are already in view on load, trigger shortly after
-    setTimeout(()=>{
-      try{
-        const r = isoGroups[0] && isoGroups[0].getBoundingClientRect();
-        if (r && r.top < window.innerHeight) {
-          addCubeClassesOnce();
-          startPulseCycles();
-        }
-      }catch(e){}
-    }, 120);
+    }, { threshold: 0.12 });
+    revealTargets.forEach(t => obs.observe(t));
+  } else {
+    // fallback
+    revealTargets.forEach(t => t.classList.add('reveal'));
   }
 
   // Start a JS-driven animation loop for the SVG groups (robust across browsers)
@@ -219,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function animateSvg(ts){
       if (!ts) ts = performance.now();
       const dt = ts - last; last = ts;
+      const dtSec = Math.max(0.001, dt/1000);
       // log once per second to help debugging in user browsers
       if (ts - lastLog > 1000) { console.log('animateSvg running', Math.round(ts)); lastLog = ts; }
       isoGroups.forEach((g) => {
@@ -226,9 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const t = ts/1000;
         // If motionPath exists, move along the path
         if (motionPath && motionSvg && g._pathLen) {
-          const speed = g._speed || 50; // px/sec
-          const offset = g._phaseOffset || 0;
-          const len = (t * speed + offset) % g._pathLen;
+          // advance path position by per-group velocity
+          g._s = (g._s + (g._v || g._speed || 50) * dtSec) % g._pathLen;
+          if (g._s < 0) g._s += g._pathLen;
+          const len = g._s;
           const pt = motionPath.getPointAtLength(len);
           const pt2 = motionPath.getPointAtLength((len + 1) % g._pathLen);
           const angleRad = Math.atan2(pt2.y - pt.y, pt2.x - pt.x);

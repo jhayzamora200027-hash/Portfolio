@@ -111,6 +111,10 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 	/* small spin for non-cube shapes */
 	.iso-group.moving circle, .iso-group.moving polygon{transition:transform 280ms ease, opacity 180ms ease}
 
+	/* pip and marker visuals */
+	.pip{filter:drop-shadow(0 6px 8px rgba(0,0,0,0.25));}
+	.marker{transform-origin:center center}
+
 	/* rolling animation for boxes */
 	.cube.roll{animation:rollIt 2200ms linear infinite}
 	@keyframes rollIt{

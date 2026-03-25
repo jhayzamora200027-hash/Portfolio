@@ -52,11 +52,13 @@
           <path id="motion-path" d="M40 360 C200 320, 400 420, 560 360 S920 320, 1160 360" stroke="rgba(255,255,255,0.06)" stroke-width="2" fill="none" stroke-dasharray="6 8" />
 
           <!-- moving shapes that follow the dotted path -->
-          <g class="iso-group moving" data-speed="60" data-phase="0" data-shape="cube" transform="translate(150,220)">
+          <g class="iso-group moving" data-speed="60" data-phase="0" data-shape="cube" data-roll="die" transform="translate(150,220)">
             <g class="cube">
               <polygon class="face top" points="60,0 120,30 60,60 0,30" fill="#9b7dff" />
               <polygon class="face left" points="0,30 60,60 60,120 0,90" fill="#6f46ff" />
               <polygon class="face right" points="120,30 60,60 60,120 120,90" fill="#06b6d4" />
+              <!-- pip to show rotation on the cube face -->
+              <circle class="pip" cx="60" cy="30" r="6" fill="#051124" />
             </g>
           </g>
 
@@ -79,6 +81,8 @@
           <!-- additional shapes: circle and hexagon -->
           <g class="iso-group moving" data-speed="52" data-phase="40" data-shape="circle" transform="translate(300,240)">
             <circle r="26" cx="0" cy="0" fill="#f59e0b" />
+            <!-- visual marker to make circle rotation visible -->
+            <rect class="marker" x="-4" y="-42" width="8" height="18" rx="2" fill="#c04a00" />
           </g>
 
           <g class="iso-group moving" data-speed="38" data-phase="200" data-shape="hex" transform="translate(520,300)">
