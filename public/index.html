@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Robert — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="#">Robert</a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#about">About</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
+          <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">🌙</button>
+        </nav>
+        <button id="nav-toggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="container hero-grid">
+          <div class="hero-text">
+            <h1>Hi — I'm Robert</h1>
+            <p class="lead">I build beautiful, accessible websites and small web apps. I focus on clean design, performance, and delightful interactions.</p>
+            <p>
+              <a class="btn primary" href="#projects">See my work</a>
+              <a class="btn" href="#contact">Get in touch</a>
+            </p>
+          </div>
+          <div class="hero-card">
+            <div class="portrait" aria-hidden="true">
+              <!-- Decorative gradient portrait -->
+              <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="g" x1="0" x2="1">
+                    <stop offset="0" stop-color="#7c3aed"/>
+                    <stop offset="1" stop-color="#06b6d4"/>
+                  </linearGradient>
+                </defs>
+                <rect width="160" height="160" rx="20" fill="url(#g)" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section container">
+        <h2>About</h2>
+        <p>I design and code modern frontends. My toolkit includes HTML, CSS, JavaScript, and accessible UI patterns. I enjoy turning ideas into polished experiences.</p>
+      </section>
+
+      <section id="projects" class="section container">
+        <h2>Selected Projects</h2>
+        <div class="grid projects-grid">
+          <article class="card">
+            <div class="card-media"></div>
+            <h3>Project One</h3>
+            <p class="muted">A small app with performant animations and responsive layout.</p>
+            <p><a class="link" href="#">View case study →</a></p>
+          </article>
+          <article class="card">
+            <div class="card-media"></div>
+            <h3>Project Two</h3>
+            <p class="muted">A landing page focused on conversion and accessibility.</p>
+            <p><a class="link" href="#">View case study →</a></p>
+          </article>
+          <article class="card">
+            <div class="card-media"></div>
+            <h3>Project Three</h3>
+            <p class="muted">A progressive web app with offline-first support.</p>
+            <p><a class="link" href="#">View case study →</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section id="contact" class="section container">
+        <h2>Contact</h2>
+        <p>Want to work together? Send me a message and I'll get back within a few days.</p>
+        <form id="contact-form" class="contact-form">
+          <input id="name" name="name" placeholder="Your name" required />
+          <input id="email" name="email" type="email" placeholder="you@domain.com" required />
+          <textarea id="message" name="message" rows="5" placeholder="A short message"></textarea>
+          <div class="form-actions">
+            <button type="submit" class="btn primary">Send</button>
+            <a class="btn" href="mailto:you@example.com">Email me</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <span id="year"></span> Robert — Built with care.</p>
+      </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
