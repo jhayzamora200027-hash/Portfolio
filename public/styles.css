@@ -81,6 +81,30 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 	/* ensure modal and content appear above svg */
 	.ig-modal,.content-card,header,footer{z-index:5}
 
+	/* Cube animation helpers */
+	.cube{transform-box:fill-box;transform-origin:50% 50%;}
+	.cube.pop {animation:popIn 640ms cubic-bezier(.2,.9,.2,1) both}
+	.cube.pop.delayed-1 {animation-delay:80ms}
+	.cube.pop.delayed-2 {animation-delay:180ms}
+	.cube.pop.delayed-3 {animation-delay:280ms}
+
+	@keyframes popIn{
+		0%{opacity:0;transform:scale(.3) translateY(18px) rotateX(0deg)}
+		60%{transform:scale(1.06) translateY(-6px)}
+		100%{opacity:1;transform:scale(1) translateY(0)}
+	}
+
+	/* rolling animation for boxes */
+	.cube.roll{animation:rollIt 1400ms linear infinite}
+	@keyframes rollIt{
+		0%{transform:rotate(0deg)}
+		100%{transform:rotate(360deg)}
+	}
+
+	/* subtle bounce for continuous motion */
+	.cube.bounce{animation:bouncy 2200ms ease-in-out infinite}
+	@keyframes bouncy{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+
 	/* Buttons */
 	.btn{display:inline-block;padding:10px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;text-decoration:none;margin-right:10px}
 	.btn.primary{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));border:0;color:#fff;box-shadow:0 10px 30px rgba(7,8,20,0.5)}

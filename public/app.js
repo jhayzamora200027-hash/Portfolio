@@ -61,6 +61,43 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('mouseleave', () => { card.style.transform = ''; });
   });
 
+  // Trigger SVG cube animations when hero iso-groups enter view
+  const isoGroups = Array.from(document.querySelectorAll('.iso-group'));
+  if (isoGroups.length) {
+    if ('IntersectionObserver' in window) {
+      const isoObs = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // add pop classes with stagger
+            isoGroups.forEach((g, i) => {
+              const cube = g.querySelector('.cube');
+              if (!cube) return;
+              cube.classList.add('pop');
+              // stagger delays using classes
+              if (i === 0) cube.classList.add('delayed-1');
+              if (i === 1) cube.classList.add('delayed-2');
+              if (i === 2) cube.classList.add('delayed-3');
+              // add continuous subtle bounce to second cube and rolling to third
+              if (i === 1) cube.classList.add('bounce');
+              if (i === 2) cube.classList.add('roll');
+            });
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.15 });
+      isoGroups.forEach(g => isoObs.observe(g));
+    } else {
+      // fallback: just add classes
+      isoGroups.forEach((g,i)=>{
+        const cube = g.querySelector('.cube');
+        if (!cube) return;
+        cube.classList.add('pop');
+        if (i===1) cube.classList.add('bounce');
+        if (i===2) cube.classList.add('roll');
+      });
+    }
+  }
+
   // Instagram-like gallery behavior
   const tiles = Array.from(document.querySelectorAll('.ig-tile'));
   const modal = document.getElementById('ig-modal');
