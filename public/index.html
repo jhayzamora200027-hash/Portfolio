@@ -70,8 +70,42 @@
             </g>
           </g>
 
-          <!-- subtle dotted path -->
-          <path d="M40 360 C200 320, 400 420, 560 360 S920 320, 1160 360" stroke="rgba(255,255,255,0.06)" stroke-width="2" fill="none" stroke-dasharray="6 8" />
+          <!-- subtle dotted path (motion path) -->
+          <path id="motion-path" d="M40 360 C200 320, 400 420, 560 360 S920 320, 1160 360" stroke="rgba(255,255,255,0.06)" stroke-width="2" fill="none" stroke-dasharray="6 8" />
+
+          <!-- moving shapes that follow the dotted path -->
+          <g class="iso-group moving" data-speed="60" data-phase="0" data-shape="cube" transform="translate(150,220)">
+            <g class="cube">
+              <polygon class="face top" points="60,0 120,30 60,60 0,30" fill="#9b7dff" />
+              <polygon class="face left" points="0,30 60,60 60,120 0,90" fill="#6f46ff" />
+              <polygon class="face right" points="120,30 60,60 60,120 120,90" fill="#06b6d4" />
+            </g>
+          </g>
+
+          <g class="iso-group moving" data-speed="48" data-phase="80" data-shape="cube" transform="translate(420,140)">
+            <g class="cube">
+              <polygon class="face top" points="80,0 160,40 80,80 0,40" fill="#06b6d4" />
+              <polygon class="face left" points="0,40 80,80 80,160 0,120" fill="#05a0b8" />
+              <polygon class="face right" points="160,40 80,80 80,160 160,120" fill="#7c3aed" />
+            </g>
+          </g>
+
+          <g class="iso-group moving" data-speed="72" data-phase="160" data-shape="cube" transform="translate(760,260)">
+            <g class="cube">
+              <polygon class="face top" points="40,0 80,20 40,40 0,20" fill="#34d399" />
+              <polygon class="face left" points="0,20 40,40 40,80 0,60" fill="#10b981" />
+              <polygon class="face right" points="80,20 40,40 40,80 80,60" fill="#06b6d4" />
+            </g>
+          </g>
+
+          <!-- additional shapes: circle and hexagon -->
+          <g class="iso-group moving" data-speed="52" data-phase="40" data-shape="circle" transform="translate(300,240)">
+            <circle r="26" cx="0" cy="0" fill="#f59e0b" />
+          </g>
+
+          <g class="iso-group moving" data-speed="38" data-phase="200" data-shape="hex" transform="translate(520,300)">
+            <polygon points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12" fill="#ef476f" />
+          </g>
         </svg>
         <div class="container hero-grid">
           <div class="hero-text">

@@ -94,6 +94,14 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 		100%{opacity:1;transform:scale(1) translateY(0) rotateX(0deg)}
 	}
 
+	/* pop out animation to give popping-in and out effect */
+	.cube.pop-out{animation:popOut 640ms cubic-bezier(.2,.8,.2,1) both}
+	@keyframes popOut{
+		0%{opacity:1;transform:scale(1) translateY(0)}
+		50%{opacity:0.8;transform:scale(1.08) translateY(-6px)}
+		100%{opacity:0;transform:scale(.3) translateY(20px)}
+	}
+
 	/* rolling animation for boxes */
 	.cube.roll{animation:rollIt 2200ms linear infinite}
 	@keyframes rollIt{

@@ -90,16 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start repeating pop pulses so boxes visibly 'pop' periodically
     function startPulseCycles(){
       isoGroups.forEach((g,i)=>{
-        const cube = g.querySelector('.cube');
-        if (!cube) return;
-        // randomize interval so they don't all pop at once
+        // randomize interval so they don't all pop at once; use timestamp flag for JS-driven pop
         const intervalMs = 2400 + Math.round(Math.random() * 1400) + (i*220);
         const id = setInterval(()=>{
-          cube.classList.remove('pop');
-          void cube.offsetWidth;
-          cube.classList.add('pop');
+          // mark this group as 'popping' so animateSvg will apply a pop scale briefly
+          g._popping = performance.now();
+          // occasionally toggle a pop-out flag to vary animations
+          g._popOutToggle = !g._popOutToggle;
         }, intervalMs);
-        // store id for potential cleanup
         g.dataset.pulseInterval = id;
       });
     }
@@ -143,6 +141,18 @@ document.addEventListener('DOMContentLoaded', () => {
       g.dataset.phase = (i * 0.9);
     });
 
+    // motion path setup (if present)
+    const motionPath = document.getElementById('motion-path');
+    const motionSvg = document.querySelector('.hero-bg');
+    const pathLength = motionPath ? motionPath.getTotalLength() : 0;
+    isoGroups.forEach((g,i)=>{
+      g._pathLen = pathLength;
+      g._speed = parseFloat(g.dataset.speed) || 50; // pixels per second
+      g._phaseOffset = (parseFloat(g.dataset.phase) || 0) % (pathLength || 360);
+      g._popping = 0;
+      g._popOutToggle = false;
+    });
+
     const parseTranslate = (str) => {
       const m = /translate\(([-0-9.\.]+)\s*,?\s*([-0-9\.]+)\)/.exec(str);
       if (m) return [parseFloat(m[1]), parseFloat(m[2])];
@@ -159,16 +169,48 @@ document.addEventListener('DOMContentLoaded', () => {
       isoGroups.forEach((g) => {
         const phase = parseFloat(g.dataset.phase) || 0;
         const t = ts/1000;
-        const [ox, oy] = parseTranslate(g.dataset.origTransform || 'translate(0,0)');
-        const dx = Math.sin(t * 1.25 + phase) * 12; // horizontal sway stronger
-        const dy = Math.cos(t * 0.85 + phase) * 14; // vertical bob stronger
-        // apply transform via CSS style for broader browser compatibility
-        try {
-          g.style.transform = `translate(${ox + dx}px, ${oy + dy}px)`;
-          g.style.willChange = 'transform';
-        } catch(e) {
-          // fallback to setting attribute if style transform fails
-          g.setAttribute('transform', `translate(${ox + dx}, ${oy + dy})`);
+        // If motionPath exists, move along the path
+        if (motionPath && motionSvg && g._pathLen) {
+          const speed = g._speed || 50; // px/sec
+          const offset = g._phaseOffset || 0;
+          const len = (t * speed + offset) % g._pathLen;
+          const pt = motionPath.getPointAtLength(len);
+          const pt2 = motionPath.getPointAtLength((len + 1) % g._pathLen);
+          const angleRad = Math.atan2(pt2.y - pt.y, pt2.x - pt.x);
+          const angleDeg = angleRad * 180 / Math.PI;
+
+          // rolling angle to simulate a die rolling: proportional to distance along path
+          const rollAngle = (len / 20) * 360; // adjust divisor for faster/slower roll
+
+          // pop scaling via timestamp (set by pulse intervals)
+          let scale = 1;
+          if (g._popping && (ts - g._popping) < 700) {
+            const elapsed = ts - g._popping;
+            // ease: quick pop up then settle
+            const p = Math.min(1, elapsed / 520);
+            scale = 1 + (0.28 * (1 - Math.pow(1 - p, 2)));
+          }
+
+          const totalRotate = angleDeg + (g.dataset.shape === 'cube' ? rollAngle : 0);
+          // build transform: translate to path point, rotate around that point, and scale
+          try {
+            // set as SVG transform attribute for precise positioning
+            g.setAttribute('transform', `translate(${pt.x}, ${pt.y}) rotate(${totalRotate}) scale(${scale})`);
+          } catch (e) {
+            // fallback: use style transform
+            g.style.transform = `translate(${pt.x}px, ${pt.y}px) rotate(${totalRotate}deg) scale(${scale})`;
+          }
+        } else {
+          // fallback gentle floating sway when no path
+          const [ox, oy] = parseTranslate(g.dataset.origTransform || 'translate(0,0)');
+          const dx = Math.sin(t * 1.25 + phase) * 12; // horizontal sway stronger
+          const dy = Math.cos(t * 0.85 + phase) * 14; // vertical bob stronger
+          try {
+            g.style.transform = `translate(${ox + dx}px, ${oy + dy}px)`;
+            g.style.willChange = 'transform';
+          } catch(e) {
+            g.setAttribute('transform', `translate(${ox + dx}, ${oy + dy})`);
+          }
         }
       });
       requestAnimationFrame(animateSvg);
