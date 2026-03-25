@@ -99,6 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Start a JS-driven animation loop for the SVG groups (robust across browsers)
+  try {
+    isoGroups.forEach((g, i) => {
+      const t = g.getAttribute('transform') || 'translate(0,0)';
+      g.dataset.origTransform = t;
+      g.dataset.phase = (i * 0.9);
+    });
+
+    const parseTranslate = (str) => {
+      const m = /translate\(([-0-9.\.]+)\s*,?\s*([-0-9\.]+)\)/.exec(str);
+      if (m) return [parseFloat(m[1]), parseFloat(m[2])];
+      return [0,0];
+    };
+
+    let last = 0;
+    function animateSvg(ts){
+      if (!ts) ts = performance.now();
+      const dt = ts - last; last = ts;
+      isoGroups.forEach((g) => {
+        const phase = parseFloat(g.dataset.phase) || 0;
+        const t = ts/1000;
+        const [ox, oy] = parseTranslate(g.dataset.origTransform || 'translate(0,0)');
+        const dx = Math.sin(t * 1.1 + phase) * 8; // horizontal sway
+        const dy = Math.cos(t * 0.9 + phase) * 12; // vertical bob
+        // apply transform with translate only (preserve simple isometric feel)
+        g.setAttribute('transform', `translate(${ox + dx}, ${oy + dy})`);
+      });
+      requestAnimationFrame(animateSvg);
+    }
+    requestAnimationFrame(animateSvg);
+  } catch (e) {
+    console.warn('SVG animation loop failed', e);
+  }
+
   // Instagram-like gallery behavior
   const tiles = Array.from(document.querySelectorAll('.ig-tile'));
   const modal = document.getElementById('ig-modal');
