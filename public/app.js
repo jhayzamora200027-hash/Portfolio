@@ -150,17 +150,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let last = 0;
+    let lastLog = 0;
     function animateSvg(ts){
       if (!ts) ts = performance.now();
       const dt = ts - last; last = ts;
+      // log once per second to help debugging in user browsers
+      if (ts - lastLog > 1000) { console.log('animateSvg running', Math.round(ts)); lastLog = ts; }
       isoGroups.forEach((g) => {
         const phase = parseFloat(g.dataset.phase) || 0;
         const t = ts/1000;
         const [ox, oy] = parseTranslate(g.dataset.origTransform || 'translate(0,0)');
-        const dx = Math.sin(t * 1.1 + phase) * 8; // horizontal sway
-        const dy = Math.cos(t * 0.9 + phase) * 12; // vertical bob
-        // apply transform with translate only (preserve simple isometric feel)
-        g.setAttribute('transform', `translate(${ox + dx}, ${oy + dy})`);
+        const dx = Math.sin(t * 1.25 + phase) * 12; // horizontal sway stronger
+        const dy = Math.cos(t * 0.85 + phase) * 14; // vertical bob stronger
+        // apply transform via CSS style for broader browser compatibility
+        try {
+          g.style.transform = `translate(${ox + dx}px, ${oy + dy}px)`;
+          g.style.willChange = 'transform';
+        } catch(e) {
+          // fallback to setting attribute if style transform fails
+          g.setAttribute('transform', `translate(${ox + dx}, ${oy + dy})`);
+        }
       });
       requestAnimationFrame(animateSvg);
     }
