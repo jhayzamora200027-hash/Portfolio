@@ -68,28 +68,48 @@
       </section>
 
       <section id="projects" class="section container">
-        <h2>Selected Projects</h2>
-        <div class="grid projects-grid">
-          <article class="card">
-            <div class="card-media" aria-hidden></div>
-            <h3>Realtime Chat</h3>
-            <p class="muted">Realtime messaging app built with Firebase, TypeScript, and React. Scales to thousands of concurrent users.</p>
-            <p><a class="link" href="#">GitHub →</a> · <a class="link" href="#">Live →</a></p>
-          </article>
-          <article class="card">
-            <div class="card-media" aria-hidden></div>
-            <h3>Analytics Dashboard</h3>
-            <p class="muted">A dashboard for visualizing large datasets with performant charts and server-side aggregation.</p>
-            <p><a class="link" href="#">GitHub →</a> · <a class="link" href="#">Live →</a></p>
-          </article>
-          <article class="card">
-            <div class="card-media" aria-hidden></div>
-            <h3>Developer CLI</h3>
-            <p class="muted">A CLI tool that automates repetitive tasks and integrates with CI pipelines.</p>
-            <p><a class="link" href="#">GitHub →</a></p>
-          </article>
+        <h2>Work Gallery</h2>
+        <p class="muted">A visual gallery of recent projects — click any tile to open details.</p>
+        <div class="ig-grid" id="ig-grid">
+          <button class="ig-tile" data-src="https://images.unsplash.com/photo-1526378729236-7e3b4f0b3d34?q=80&w=800&auto=format&fit=crop" data-title="Realtime Chat" data-desc="Chat app with presence, typing indicators, and offline support.">
+            <img src="https://images.unsplash.com/photo-1526378729236-7e3b4f0b3d34?q=60&w=600&auto=format&fit=crop" alt="Realtime Chat screenshot" />
+            <div class="ig-overlay"><div class="ig-title">Realtime Chat</div></div>
+          </button>
+          <button class="ig-tile" data-src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop" data-title="Analytics Dashboard" data-desc="High-performance dashboard with realtime charts and ETL pipelines.">
+            <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=60&w=600&auto=format&fit=crop" alt="Analytics screenshot" />
+            <div class="ig-overlay"><div class="ig-title">Analytics Dashboard</div></div>
+          </button>
+          <button class="ig-tile" data-src="https://images.unsplash.com/photo-1526378729236-7e3b4f0b3d34?q=80&w=800&auto=format&fit=crop" data-title="Developer CLI" data-desc="CLI utility for developer workflows and CI automation.">
+            <img src="https://images.unsplash.com/photo-1526378729236-7e3b4f0b3d34?q=60&w=600&auto=format&fit=crop" alt="CLI screenshot" />
+            <div class="ig-overlay"><div class="ig-title">Developer CLI</div></div>
+          </button>
+          <button class="ig-tile" data-src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=800&auto=format&fit=crop" data-title="PWA App" data-desc="Offline-first progressive web app with service-worker caching.">
+            <img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=60&w=600&auto=format&fit=crop" alt="PWA screenshot" />
+            <div class="ig-overlay"><div class="ig-title">PWA App</div></div>
+          </button>
+          <button class="ig-tile" data-src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop" data-title="Team Dashboard" data-desc="Internal tools to boost team productivity and metrics.">
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=60&w=600&auto=format&fit=crop" alt="Team dashboard screenshot" />
+            <div class="ig-overlay"><div class="ig-title">Team Dashboard</div></div>
+          </button>
         </div>
       </section>
+
+      <!-- Image viewer modal for IG-style gallery -->
+      <div id="ig-modal" class="ig-modal hidden" aria-hidden="true">
+        <div class="ig-backdrop" id="ig-backdrop"></div>
+        <div class="ig-modal-content" role="dialog" aria-modal="true">
+          <button id="ig-close" class="ig-close" aria-label="Close">✕</button>
+          <img id="ig-full" src="" alt="" />
+          <div class="ig-caption">
+            <h3 id="ig-title"></h3>
+            <p id="ig-desc" class="muted"></p>
+          </div>
+          <div class="ig-controls">
+            <button id="ig-prev" class="ig-nav">◀</button>
+            <button id="ig-next" class="ig-nav">▶</button>
+          </div>
+        </div>
+      </div>
 
       <section id="skills" class="section container">
         <h2>Skills</h2>

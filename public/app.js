@@ -61,6 +61,56 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('mouseleave', () => { card.style.transform = ''; });
   });
 
+  // Instagram-like gallery behavior
+  const tiles = Array.from(document.querySelectorAll('.ig-tile'));
+  const modal = document.getElementById('ig-modal');
+  const backdrop = document.getElementById('ig-backdrop');
+  const fullImg = document.getElementById('ig-full');
+  const titleEl = document.getElementById('ig-title');
+  const descEl = document.getElementById('ig-desc');
+  const closeBtn = document.getElementById('ig-close');
+  const prevBtn = document.getElementById('ig-prev');
+  const nextBtn = document.getElementById('ig-next');
+  let currentIndex = -1;
+
+  function openIndex(i){
+    const tile = tiles[i];
+    if (!tile) return;
+    const src = tile.dataset.src;
+    const title = tile.dataset.title || '';
+    const desc = tile.dataset.desc || '';
+    fullImg.src = src;
+    fullImg.alt = title;
+    titleEl.textContent = title;
+    descEl.textContent = desc;
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden','false');
+    currentIndex = i;
+  }
+
+  function closeModal(){
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden','true');
+    fullImg.src = '';
+    currentIndex = -1;
+  }
+
+  tiles.forEach((t,i)=>{
+    t.addEventListener('click', ()=> openIndex(i));
+  });
+  closeBtn && closeBtn.addEventListener('click', closeModal);
+  backdrop && backdrop.addEventListener('click', closeModal);
+  prevBtn && prevBtn.addEventListener('click', ()=>{ if (currentIndex>0) openIndex(currentIndex-1); });
+  nextBtn && nextBtn.addEventListener('click', ()=>{ if (currentIndex<tiles.length-1) openIndex(currentIndex+1); });
+  document.addEventListener('keydown',(e)=>{
+    if (modal && !modal.classList.contains('hidden')){
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') prevBtn && prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn && nextBtn.click();
+    }
+  });
+
   // Contact form: basic mailto fallback
   const form = document.getElementById('contact-form');
   if (form) {

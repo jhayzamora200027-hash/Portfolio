@@ -102,6 +102,30 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 	/* small badge for resume/download */
 	.download-resume{display:inline-block;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.03);color:var(--accent-2);font-weight:700;margin-left:8px}
 
+	/* Instagram-like grid */
+	.ig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+	.ig-tile{position:relative;overflow:hidden;border-radius:8px;padding:0;border:0;background:transparent;cursor:pointer}
+	.ig-tile img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:1/1;transition:transform .45s cubic-bezier(.2,.9,.2,1)}
+	.ig-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(2,6,23,0.5));opacity:0;display:flex;align-items:flex-end;justify-content:center;padding:12px;transition:opacity .22s ease}
+	.ig-title{color:#fff;font-weight:800}
+	.ig-tile:hover img{transform:scale(1.06)}
+	.ig-tile:hover .ig-overlay{opacity:1}
+
+	/* modal */
+	.ig-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:2000}
+	.ig-modal.hidden{display:none}
+	.ig-backdrop{position:fixed;inset:0;background:rgba(5,9,18,0.7)}
+	.ig-modal-content{position:relative;max-width:900px;width:94%;max-height:90vh;background:transparent;display:flex;flex-direction:column;align-items:center;gap:12px}
+	.ig-modal-content img{max-width:100%;max-height:70vh;border-radius:10px;box-shadow:0 20px 50px rgba(2,6,23,0.6)}
+	.ig-caption{background:rgba(3,7,14,0.6);padding:12px;border-radius:8px;width:100%;color:#e6eef8}
+	.ig-close{position:absolute;right:-6px;top:-6px;background:var(--accent-2);border:0;color:#02121a;padding:8px 10px;border-radius:10px;font-weight:800;cursor:pointer}
+	.ig-controls{position:absolute;left:12px;right:12px;top:50%;display:flex;justify-content:space-between;pointer-events:none}
+	.ig-nav{pointer-events:auto;background:rgba(255,255,255,0.04);border:0;color:#fff;padding:10px 12px;border-radius:8px;cursor:pointer}
+
+	@media(max-width:1100px){.ig-grid{grid-template-columns:repeat(3,1fr)}}
+	@media(max-width:720px){.ig-grid{grid-template-columns:repeat(2,1fr)}}
+	@media(max-width:420px){.ig-grid{grid-template-columns:repeat(1,1fr)}}
+
 	/* Footer */
 	.site-footer{padding:28px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02);text-align:center}
 
