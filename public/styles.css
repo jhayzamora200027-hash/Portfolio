@@ -102,6 +102,15 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 		100%{opacity:0;transform:scale(.3) translateY(20px)}
 	}
 
+	/* shadow for moving shapes */
+	.hero-bg .shadow{fill:#000;opacity:0.12;filter:blur(6px);transform-origin:center center}
+
+	/* inner cube smoother transforms */
+	.iso-group .cube{transition:transform 220ms cubic-bezier(.2,.9,.2,1);}
+
+	/* small spin for non-cube shapes */
+	.iso-group.moving circle, .iso-group.moving polygon{transition:transform 280ms ease, opacity 180ms ease}
+
 	/* rolling animation for boxes */
 	.cube.roll{animation:rollIt 2200ms linear infinite}
 	@keyframes rollIt{

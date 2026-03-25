@@ -143,16 +143,33 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!g.dataset.phase) g.dataset.phase = (i * 0.9);
     });
 
-    // motion path setup (if present)
+    // motion path setup (if present) and per-group behavior params
     const motionPath = document.getElementById('motion-path');
     const motionSvg = document.querySelector('.hero-bg');
     const pathLength = motionPath ? motionPath.getTotalLength() : 0;
     isoGroups.forEach((g,i)=>{
       g._pathLen = pathLength;
-      g._speed = parseFloat(g.dataset.speed) || 50; // pixels per second
-      g._phaseOffset = (parseFloat(g.dataset.phase) || 0) % (pathLength || 360);
+      g._speed = parseFloat(g.dataset.speed) || (50 + Math.round(Math.random()*40)); // px/sec
+      g._phaseOffset = (parseFloat(g.dataset.phase) || (i * 40)) % (pathLength || 360);
       g._popping = 0;
       g._popOutToggle = false;
+      // behavior tuning
+      g._wobbleAmp = 4 + Math.random() * 14; // side wobble
+      g._bobAmp = 6 + Math.random() * 18; // vertical bob
+      g._spinSpeed = 0.6 + Math.random() * 1.6; // inner spin multiplier
+      // attach a shadow element if not present
+      if (!g.querySelector('.shadow')){
+        const xmlns = "http://www.w3.org/2000/svg";
+        const ell = document.createElementNS(xmlns, 'ellipse');
+        ell.setAttribute('class', 'shadow');
+        ell.setAttribute('cx', 0);
+        ell.setAttribute('cy', 0);
+        ell.setAttribute('rx', 36);
+        ell.setAttribute('ry', 12);
+        ell.setAttribute('opacity', 0.12);
+        // insert shadow as first child so it sits under the shape
+        g.insertBefore(ell, g.firstChild);
+      }
     });
 
     const parseTranslate = (str) => {
@@ -182,7 +199,20 @@ document.addEventListener('DOMContentLoaded', () => {
           const angleDeg = angleRad * 180 / Math.PI;
 
           // rolling angle to simulate a die rolling: proportional to distance along path
-          const rollAngle = (len / 20) * 360; // adjust divisor for faster/slower roll
+          const rollAngle = (len / 20) * 360 * (g._spinSpeed || 1); // adjust divisor for faster/slower roll
+
+          // perpendicular wobble offset (side-to-side)
+          const dxT = pt2.x - pt.x;
+          const dyT = pt2.y - pt.y;
+          const mag = Math.sqrt(dxT*dxT + dyT*dyT) || 1;
+          const nx = -dyT / mag; // normalized perpendicular
+          const ny = dxT / mag;
+          const wob = Math.sin(t * (0.9 + (g._spinSpeed||1)) + (g._phaseOffset||0)/100) * g._wobbleAmp;
+          const wobX = nx * wob;
+          const wobY = ny * wob;
+
+          // bobbing (vertical) based on shape's bob amplitude
+          const bobOffset = Math.sin(t * (0.9 + (g._spinSpeed||1)) + (g._phaseOffset||0)/50) * g._bobAmp;
 
           // pop scaling via timestamp (set by pulse intervals)
           let scale = 1;
@@ -194,21 +224,33 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           const totalRotate = angleDeg + (g.dataset.shape === 'cube' ? rollAngle : 0);
-          // build transform: translate to path point, rotate around that point, and scale
+          // build transform: translate to path point + wobble offsets, rotate by path tangent, and scale
+          const tx = pt.x + wobX;
+          const ty = pt.y + wobY - bobOffset * 0.5; // lift slightly when bobbing
           try {
-            // set as SVG transform attribute for precise positioning
-            g.setAttribute('transform', `translate(${pt.x}, ${pt.y}) rotate(${angleDeg}) scale(${scale})`);
-            // apply additional inner rotation to simulate rolling (die-like)
-            const inner = g.querySelector('.cube');
+            g.setAttribute('transform', `translate(${tx}, ${ty}) rotate(${angleDeg}) scale(${scale})`);
+            // inner rotation + small tilt to simulate tumbling
+            const inner = g.querySelector('.cube') || g.querySelector('circle') || g.querySelector('polygon');
             if (inner) {
-              // rotate inner around its local origin to simulate roll
-              inner.setAttribute('transform', `rotate(${rollAngle})`);
+              const tilt = Math.sin(t * 2.3 + g._phaseOffset/100) * 6; // small tilt oscillation
+              inner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollAngle}) rotate(${tilt})`);
+            }
+            // update shadow under the element
+            const shadow = g.querySelector('.shadow');
+            if (shadow) {
+              // scale shadow by scale and bob (higher => smaller shadow)
+              const srx = Math.max(8, 36 * (1 / Math.max(0.6, scale)));
+              const sry = Math.max(4, 12 * (1 / Math.max(0.6, scale)));
+              shadow.setAttribute('cx', 0);
+              shadow.setAttribute('cy', 10 + Math.max(0, bobOffset/3));
+              shadow.setAttribute('rx', srx);
+              shadow.setAttribute('ry', sry);
+              shadow.setAttribute('opacity', Math.max(0.06, 0.18 * (1 / Math.max(0.6, scale))));
             }
           } catch (e) {
-            // fallback: use style transform
-            g.style.transform = `translate(${pt.x}px, ${pt.y}px) rotate(${angleDeg}deg) scale(${scale})`;
-            const inner = g.querySelector('.cube');
-            if (inner) inner.style.transform = `rotate(${rollAngle}deg)`;
+            g.style.transform = `translate(${tx}px, ${ty}px) rotate(${angleDeg}deg) scale(${scale})`;
+            const inner = g.querySelector('.cube') || g.querySelector('circle') || g.querySelector('polygon');
+            if (inner) inner.style.transform = `translateY(${-bobOffset}px) rotate(${rollAngle}deg)`;
           }
         } else {
           // fallback gentle floating sway when no path
