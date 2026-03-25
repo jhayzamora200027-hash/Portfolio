@@ -28,69 +28,93 @@
       <section class="hero" id="home">
         <div class="container hero-grid">
           <div class="hero-text">
-            <h1>Hi — I'm Robert</h1>
-            <p class="lead">I build beautiful, accessible websites and small web apps. I focus on clean design, performance, and delightful interactions.</p>
+            <h1>Robert — Software Developer</h1>
+            <p class="lead">I build scalable web applications and developer tools. Experienced with modern JavaScript, TypeScript, Node.js, cloud platforms, and CI/CD.</p>
             <p>
               <a class="btn primary" href="#projects">See my work</a>
-              <a class="btn" href="#contact">Get in touch</a>
+              <a class="btn" href="#contact">Contact</a>
             </p>
+            <ul class="badges">
+              <li>TypeScript</li>
+              <li>React</li>
+              <li>Node.js</li>
+              <li>Firebase</li>
+              <li>Docker</li>
+            </ul>
           </div>
           <div class="hero-card">
-            <div class="portrait" aria-hidden="true">
-              <!-- Decorative gradient portrait -->
-              <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="g" x1="0" x2="1">
-                    <stop offset="0" stop-color="#7c3aed"/>
-                    <stop offset="1" stop-color="#06b6d4"/>
-                  </linearGradient>
-                </defs>
-                <rect width="160" height="160" rx="20" fill="url(#g)" />
-              </svg>
+            <div class="portrait">
+              <img src="https://avatars.dicebear.com/api/identicon/robert.svg" alt="Portrait" width="140" height="140" />
             </div>
           </div>
         </div>
       </section>
 
       <section id="about" class="section container">
-        <h2>About</h2>
-        <p>I design and code modern frontends. My toolkit includes HTML, CSS, JavaScript, and accessible UI patterns. I enjoy turning ideas into polished experiences.</p>
+        <div class="split">
+          <div>
+            <h2>About</h2>
+            <p>I create developer-focused products and tools with emphasis on performance, maintainability, and automated workflows. I enjoy mentoring teams and improving developer experience.</p>
+          </div>
+          <div>
+            <h3>Experience</h3>
+            <ul class="experience">
+              <li><strong>Senior Software Engineer</strong> — ExampleCorp (2022–Present)</li>
+              <li><strong>Frontend Engineer</strong> — StartupX (2019–2022)</li>
+              <li><strong>BSc Computer Science</strong> — University</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section id="projects" class="section container">
         <h2>Selected Projects</h2>
         <div class="grid projects-grid">
           <article class="card">
-            <div class="card-media"></div>
-            <h3>Project One</h3>
-            <p class="muted">A small app with performant animations and responsive layout.</p>
-            <p><a class="link" href="#">View case study →</a></p>
+            <div class="card-media" aria-hidden></div>
+            <h3>Realtime Chat</h3>
+            <p class="muted">Realtime messaging app built with Firebase, TypeScript, and React. Scales to thousands of concurrent users.</p>
+            <p><a class="link" href="#">GitHub →</a> · <a class="link" href="#">Live →</a></p>
           </article>
           <article class="card">
-            <div class="card-media"></div>
-            <h3>Project Two</h3>
-            <p class="muted">A landing page focused on conversion and accessibility.</p>
-            <p><a class="link" href="#">View case study →</a></p>
+            <div class="card-media" aria-hidden></div>
+            <h3>Analytics Dashboard</h3>
+            <p class="muted">A dashboard for visualizing large datasets with performant charts and server-side aggregation.</p>
+            <p><a class="link" href="#">GitHub →</a> · <a class="link" href="#">Live →</a></p>
           </article>
           <article class="card">
-            <div class="card-media"></div>
-            <h3>Project Three</h3>
-            <p class="muted">A progressive web app with offline-first support.</p>
-            <p><a class="link" href="#">View case study →</a></p>
+            <div class="card-media" aria-hidden></div>
+            <h3>Developer CLI</h3>
+            <p class="muted">A CLI tool that automates repetitive tasks and integrates with CI pipelines.</p>
+            <p><a class="link" href="#">GitHub →</a></p>
           </article>
+        </div>
+      </section>
+
+      <section id="skills" class="section container">
+        <h2>Skills</h2>
+        <div class="skills-grid">
+          <div class="skill">JavaScript / TypeScript</div>
+          <div class="skill">React / Next.js</div>
+          <div class="skill">Node.js / Express</div>
+          <div class="skill">REST / GraphQL</div>
+          <div class="skill">Testing (Jest, RTL)</div>
+          <div class="skill">CI/CD / Docker</div>
         </div>
       </section>
 
       <section id="contact" class="section container">
         <h2>Contact</h2>
-        <p>Want to work together? Send me a message and I'll get back within a few days.</p>
+        <p>Open to contract or full-time roles. Reach out via email or LinkedIn.</p>
         <form id="contact-form" class="contact-form">
           <input id="name" name="name" placeholder="Your name" required />
           <input id="email" name="email" type="email" placeholder="you@domain.com" required />
+          <input id="subject" name="subject" placeholder="Subject" />
           <textarea id="message" name="message" rows="5" placeholder="A short message"></textarea>
           <div class="form-actions">
             <button type="submit" class="btn primary">Send</button>
-            <a class="btn" href="mailto:you@example.com">Email me</a>
+            <a class="btn" href="mailto:you@example.com">Email</a>
+            <a class="btn" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
           </div>
         </form>
       </section>

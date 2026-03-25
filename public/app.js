@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight - 80) el.classList.add('reveal');
   };
-  const cards = document.querySelectorAll('.card');
+  const cards = document.querySelectorAll('.card, .skill, .portrait');
   const onScroll = () => cards.forEach(reveal);
-  window.addEventListener('scroll', onScroll);
+  window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
   // Contact form: basic mailto fallback
@@ -46,10 +46,26 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const name = document.getElementById('name').value || 'No name';
       const email = document.getElementById('email').value || 'no-email';
+      const subjectVal = document.getElementById('subject') ? document.getElementById('subject').value : '';
       const message = document.getElementById('message').value || '';
-      const subject = encodeURIComponent(`Portfolio message from ${name}`);
+      const subject = encodeURIComponent(subjectVal || `Portfolio message from ${name}`);
       const body = encodeURIComponent(`From: ${name} <${email}>\n\n${message}`);
       window.location.href = `mailto:you@example.com?subject=${subject}&body=${body}`;
     });
   }
+
+  // Smooth scroll for internal links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (!href || href === '#') return;
+      if (href.startsWith('#')) {
+        const el = document.querySelector(href);
+        if (el) {
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
 });
