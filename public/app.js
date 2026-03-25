@@ -149,10 +149,37 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             g.setAttribute('transform', `translate(${tx}, ${ty}) rotate(${angleDeg}) scale(${scale})`);
             // inner rotation + small tilt to simulate tumbling
-            const inner = g.querySelector('.cube') || g.querySelector('circle') || g.querySelector('polygon');
-            if (inner) {
-              const tilt = Math.sin(t * 2.3 + g._phaseOffset/100) * 6; // small tilt oscillation
-              inner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollAngle}) rotate(${tilt})`);
+            // Apply inner rotations differently depending on shape type
+            const cubeInner = g.querySelector('g.cube');
+            const circleEl = g.querySelector('circle');
+            const marker = g.querySelector('.marker');
+            const tilt = Math.sin(t * 2.3 + (g._phaseOffset||0)/100) * 6; // small tilt oscillation
+            if (cubeInner) {
+              // If explicitly marked as a die, rotate around its center using bbox
+              if (g.dataset.roll === 'die') {
+                try {
+                  const bb = cubeInner.getBBox();
+                  const cx = bb.x + bb.width/2;
+                  const cy = bb.y + bb.height/2;
+                  // translate to center, rotate by rollAngle, apply slight tilt, translate back
+                  cubeInner.setAttribute('transform', `translate(${cx},${cy}) rotate(${rollAngle}) rotate(${tilt}) translate(${-cx},${-cy}) translate(0, ${-bobOffset})`);
+                } catch (e) {
+                  // fallback: basic rotate
+                  cubeInner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollAngle}) rotate(${tilt})`);
+                }
+              } else {
+                // small rotation for non-die cubes
+                cubeInner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollAngle * 0.2}) rotate(${tilt})`);
+              }
+            } else if (circleEl && marker) {
+              // Circle: rotate the visual marker to show rolling
+              const r = parseFloat(circleEl.getAttribute('r') || 26);
+              const rollDeg = (g._s * 360) / (2 * Math.PI * Math.max(1, r));
+              // rotate marker around circle center (0,0)
+              marker.setAttribute('transform', `rotate(${rollDeg}) translate(0, ${-bobOffset}) rotate(${tilt})`);
+            } else {
+              const inner = g.querySelector('polygon');
+              if (inner) inner.setAttribute('transform', `translate(0, ${-bobOffset}) rotate(${rollAngle * 0.5}) rotate(${tilt})`);
             }
             // update shadow under the element
             const shadow = g.querySelector('.shadow');
