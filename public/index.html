@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#0f172a" />
-    <title>Robert — Portfolio</title>
+    <title>Jay - Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -34,64 +34,11 @@
 
     <main>
       <section class="hero" id="home">
-        <!-- Animated isometric SVG background -->
-        <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1">
-              <stop offset="0" stop-color="#7c3aed" stop-opacity="0.95"/>
-              <stop offset="1" stop-color="#06b6d4" stop-opacity="0.95"/>
-            </linearGradient>
-            <linearGradient id="g2" x1="0" x2="1">
-              <stop offset="0" stop-color="#08a74a" stop-opacity="0.95"/>
-              <stop offset="1" stop-color="#06b6d4" stop-opacity="0.95"/>
-            </linearGradient>
-          </defs>
-          <!-- (removed original static iso-groups) -->
-
-          <!-- subtle dotted path (motion path) -->
-          <path id="motion-path" d="M40 360 C200 320, 400 420, 560 360 S920 320, 1160 360" stroke="rgba(255,255,255,0.06)" stroke-width="2" fill="none" stroke-dasharray="6 8" />
-
-          <!-- moving shapes that follow the dotted path -->
-          <g class="iso-group moving" data-speed="60" data-phase="0" data-shape="cube" data-roll="die" transform="translate(150,220)">
-            <g class="cube">
-              <polygon class="face top" points="60,0 120,30 60,60 0,30" fill="#9b7dff" />
-              <polygon class="face left" points="0,30 60,60 60,120 0,90" fill="#6f46ff" />
-              <polygon class="face right" points="120,30 60,60 60,120 120,90" fill="#06b6d4" />
-              <!-- pip to show rotation on the cube face -->
-              <circle class="pip" cx="60" cy="30" r="6" fill="#051124" />
-            </g>
-          </g>
-
-          <g class="iso-group moving" data-speed="48" data-phase="80" data-shape="cube" transform="translate(420,140)">
-            <g class="cube">
-              <polygon class="face top" points="80,0 160,40 80,80 0,40" fill="#06b6d4" />
-              <polygon class="face left" points="0,40 80,80 80,160 0,120" fill="#05a0b8" />
-              <polygon class="face right" points="160,40 80,80 80,160 160,120" fill="#7c3aed" />
-            </g>
-          </g>
-
-          <g class="iso-group moving" data-speed="72" data-phase="160" data-shape="cube" transform="translate(760,260)">
-            <g class="cube">
-              <polygon class="face top" points="40,0 80,20 40,40 0,20" fill="#34d399" />
-              <polygon class="face left" points="0,20 40,40 40,80 0,60" fill="#10b981" />
-              <polygon class="face right" points="80,20 40,40 40,80 80,60" fill="#06b6d4" />
-            </g>
-          </g>
-
-          <!-- additional shapes: circle and hexagon -->
-          <g class="iso-group moving" data-speed="52" data-phase="40" data-shape="circle" transform="translate(300,240)">
-            <circle r="26" cx="0" cy="0" fill="#f59e0b" />
-            <!-- visual marker to make circle rotation visible -->
-            <rect class="marker" x="-4" y="-42" width="8" height="18" rx="2" fill="#c04a00" />
-          </g>
-
-          <g class="iso-group moving" data-speed="38" data-phase="200" data-shape="hex" transform="translate(520,300)">
-            <polygon points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12" fill="#ef476f" />
-          </g>
-        </svg>
+        <!-- hero SVG removed per request -->
         <div class="container hero-grid">
           <div class="hero-text">
             <h1>Robert — Software Developer</h1>
+            <p class="role">Full‑stack engineer &amp; toolmaker building delightful developer experiences.</p>
             <p class="lead">I build scalable web applications and developer tools. Experienced with modern JavaScript, TypeScript, Node.js, cloud platforms, and CI/CD.</p>
             <p>
               <a class="btn primary" href="#projects">See my work</a>
@@ -106,8 +53,27 @@
             </ul>
           </div>
           <div class="hero-card">
-            <div class="portrait">
-              <img src="https://avatars.dicebear.com/api/identicon/robert.svg" alt="Portrait" width="140" height="140" />
+            <div class="glass-card" role="region" aria-label="Profile card">
+              <svg class="tech-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="lg" x1="0" x2="1">
+                    <stop offset="0" stop-color="#7c3aed" />
+                    <stop offset="1" stop-color="#06b6d4" />
+                  </linearGradient>
+                </defs>
+                <g transform="translate(60,60)">
+                  <circle cx="0" cy="0" r="40" fill="none" stroke="url(#lg)" stroke-width="3" class="ring" stroke-linecap="round" stroke-dasharray="10 6" />
+                  <circle cx="0" cy="0" r="28" fill="rgba(255,255,255,0.03)" />
+                </g>
+              </svg>
+              <div class="portrait">
+                <img class="profile-img" src="./profile standing.png" alt="Portrait" width="180" height="180" onerror="this.onerror=null;this.src='https://avatars.dicebear.com/api/identicon/robert.svg'" />
+              </div>
+              <div class="card-meta">
+                <h3>Robert</h3>
+                <p class="muted small">Full‑stack engineer • TypeScript • Cloud</p>
+                <p style="margin-top:10px"><a class="btn primary" href="#contact">Hire me</a></p>
+              </div>
             </div>
           </div>
         </div>
