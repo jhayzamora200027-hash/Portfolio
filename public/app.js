@@ -64,39 +64,75 @@ document.addEventListener('DOMContentLoaded', () => {
   // Trigger SVG cube animations when hero iso-groups enter view
   const isoGroups = Array.from(document.querySelectorAll('.iso-group'));
   if (isoGroups.length) {
+    // Helper to add initial classes (staggered)
+    function addCubeClassesOnce(){
+      console.log('triggering iso-group classes');
+      isoGroups.forEach((g, i) => {
+        const cube = g.querySelector('.cube');
+        if (!cube) return;
+        // ensure previous pop is reset so CSS animation can retrigger
+        cube.classList.remove('pop');
+        if (i === 0) cube.classList.add('delayed-1');
+        if (i === 1) cube.classList.add('delayed-2');
+        if (i === 2) cube.classList.add('delayed-3');
+        // continuous motion classes
+        if (i === 1) cube.classList.add('bounce');
+        if (i === 2) cube.classList.add('roll');
+        // trigger initial pop after small stagger
+        setTimeout(()=>{
+          cube.classList.remove('pop');
+          void cube.offsetWidth;
+          cube.classList.add('pop');
+        }, 80 + i * 120);
+      });
+    }
+
+    // Start repeating pop pulses so boxes visibly 'pop' periodically
+    function startPulseCycles(){
+      isoGroups.forEach((g,i)=>{
+        const cube = g.querySelector('.cube');
+        if (!cube) return;
+        // randomize interval so they don't all pop at once
+        const intervalMs = 2400 + Math.round(Math.random() * 1400) + (i*220);
+        const id = setInterval(()=>{
+          cube.classList.remove('pop');
+          void cube.offsetWidth;
+          cube.classList.add('pop');
+        }, intervalMs);
+        // store id for potential cleanup
+        g.dataset.pulseInterval = id;
+      });
+    }
+
+    // Use IntersectionObserver to trigger when visible, but also trigger immediately as a fallback
     if ('IntersectionObserver' in window) {
       const isoObs = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-              console.log('iso groups entering view — triggering animations');
-              // add pop classes with stagger
-            isoGroups.forEach((g, i) => {
-              const cube = g.querySelector('.cube');
-              if (!cube) return;
-              cube.classList.add('pop');
-              // stagger delays using classes
-              if (i === 0) cube.classList.add('delayed-1');
-              if (i === 1) cube.classList.add('delayed-2');
-              if (i === 2) cube.classList.add('delayed-3');
-              // add continuous subtle bounce to second cube and rolling to third
-              if (i === 1) cube.classList.add('bounce');
-              if (i === 2) cube.classList.add('roll');
-            });
+            console.log('iso groups entering view — triggering animations');
+            addCubeClassesOnce();
+            startPulseCycles();
             obs.disconnect();
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.12 });
       isoGroups.forEach(g => isoObs.observe(g));
     } else {
-      // fallback: just add classes
-      isoGroups.forEach((g,i)=>{
-        const cube = g.querySelector('.cube');
-        if (!cube) return;
-        cube.classList.add('pop');
-        if (i===1) cube.classList.add('bounce');
-        if (i===2) cube.classList.add('roll');
-      });
+      // immediate fallback
+      addCubeClassesOnce();
+      startPulseCycles();
     }
+
+    // extra-protection: if elements are already in view on load, trigger shortly after
+    setTimeout(()=>{
+      try{
+        const r = isoGroups[0] && isoGroups[0].getBoundingClientRect();
+        if (r && r.top < window.innerHeight) {
+          addCubeClassesOnce();
+          startPulseCycles();
+        }
+      }catch(e){}
+    }, 120);
   }
 
   // Start a JS-driven animation loop for the SVG groups (robust across browsers)
