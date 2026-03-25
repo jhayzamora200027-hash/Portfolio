@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Trigger SVG cube animations when hero iso-groups enter view
-  const isoGroups = Array.from(document.querySelectorAll('.iso-group'));
+  // Only consider groups explicitly marked as moving to avoid duplicates
+  const isoGroups = Array.from(document.querySelectorAll('.iso-group.moving'));
   if (isoGroups.length) {
     // Helper to add initial classes (staggered)
     function addCubeClassesOnce(){
@@ -138,7 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
     isoGroups.forEach((g, i) => {
       const t = g.getAttribute('transform') || 'translate(0,0)';
       g.dataset.origTransform = t;
-      g.dataset.phase = (i * 0.9);
+      // preserve any existing data-phase set in the HTML; otherwise set a small default
+      if (!g.dataset.phase) g.dataset.phase = (i * 0.9);
     });
 
     // motion path setup (if present)
@@ -195,10 +197,18 @@ document.addEventListener('DOMContentLoaded', () => {
           // build transform: translate to path point, rotate around that point, and scale
           try {
             // set as SVG transform attribute for precise positioning
-            g.setAttribute('transform', `translate(${pt.x}, ${pt.y}) rotate(${totalRotate}) scale(${scale})`);
+            g.setAttribute('transform', `translate(${pt.x}, ${pt.y}) rotate(${angleDeg}) scale(${scale})`);
+            // apply additional inner rotation to simulate rolling (die-like)
+            const inner = g.querySelector('.cube');
+            if (inner) {
+              // rotate inner around its local origin to simulate roll
+              inner.setAttribute('transform', `rotate(${rollAngle})`);
+            }
           } catch (e) {
             // fallback: use style transform
-            g.style.transform = `translate(${pt.x}px, ${pt.y}px) rotate(${totalRotate}deg) scale(${scale})`;
+            g.style.transform = `translate(${pt.x}px, ${pt.y}px) rotate(${angleDeg}deg) scale(${scale})`;
+            const inner = g.querySelector('.cube');
+            if (inner) inner.style.transform = `rotate(${rollAngle}deg)`;
           }
         } else {
           // fallback gentle floating sway when no path
