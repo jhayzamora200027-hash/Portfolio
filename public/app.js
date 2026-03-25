@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const isoObs = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // add pop classes with stagger
+              console.log('iso groups entering view — triggering animations');
+              // add pop classes with stagger
             isoGroups.forEach((g, i) => {
               const cube = g.querySelector('.cube');
               if (!cube) return;

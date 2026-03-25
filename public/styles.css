@@ -68,9 +68,9 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 	.hero > .container{position:relative;z-index:2}
 
 	/* Animate cubes: slow float and slight rotate */
-	.iso-group{transform-origin:center;animation:isoFloat 8s ease-in-out infinite}
-	.iso-group:nth-child(2){animation-duration:10s;animation-direction:reverse}
-	.iso-group:nth-child(3){animation-duration:12s}
+	.iso-group{transform-box:fill-box;transform-origin:center;animation:isoFloat 6s ease-in-out infinite}
+	.iso-group:nth-child(2){animation-duration:8s;animation-direction:reverse}
+	.iso-group:nth-child(3){animation-duration:10s}
 
 	@keyframes isoFloat{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(2deg)}100%{transform:translateY(0) rotate(0deg)}}
 
@@ -83,21 +83,22 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe U
 
 	/* Cube animation helpers */
 	.cube{transform-box:fill-box;transform-origin:50% 50%;}
-	.cube.pop {animation:popIn 640ms cubic-bezier(.2,.9,.2,1) both}
+	.cube.pop {animation:popIn 520ms cubic-bezier(.175, .885, .32, 1.275) both}
 	.cube.pop.delayed-1 {animation-delay:80ms}
 	.cube.pop.delayed-2 {animation-delay:180ms}
 	.cube.pop.delayed-3 {animation-delay:280ms}
 
 	@keyframes popIn{
-		0%{opacity:0;transform:scale(.3) translateY(18px) rotateX(0deg)}
-		60%{transform:scale(1.06) translateY(-6px)}
-		100%{opacity:1;transform:scale(1) translateY(0)}
+		0%{opacity:0;transform:scale(.2) translateY(30px) rotateX(0deg)}
+		50%{transform:scale(1.12) translateY(-12px) rotateX(6deg)}
+		100%{opacity:1;transform:scale(1) translateY(0) rotateX(0deg)}
 	}
 
 	/* rolling animation for boxes */
-	.cube.roll{animation:rollIt 1400ms linear infinite}
+	.cube.roll{animation:rollIt 2200ms linear infinite}
 	@keyframes rollIt{
 		0%{transform:rotate(0deg)}
+		50%{transform:rotate(180deg)}
 		100%{transform:rotate(360deg)}
 	}
 
